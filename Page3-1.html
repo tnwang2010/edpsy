@@ -534,6 +534,10 @@
         elNext.textContent = (idx < questions.length-1) ? '下一題' : '完成並查看分數';
         elNext.onclick = ()=>{
           if (!answered) return;
+          
+          // ++ 就是加上這一行 ++
+quizCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
           idx++;
           if (idx >= questions.length) return finish();
           render();
