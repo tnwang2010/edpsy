@@ -535,8 +535,8 @@
         elNext.onclick = ()=>{
           if (!answered) return;
           
-          // ++ 就是加上這一行 ++
-quizCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+// ++ 請換成這一行，就能跳回網頁最頂端 ++
+window.scrollTo({ top: 0, behavior: 'smooth' });
 
           idx++;
           if (idx >= questions.length) return finish();
