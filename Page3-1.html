@@ -533,23 +533,24 @@
 
         elNext.textContent = (idx < questions.length-1) ? '下一題' : '完成並查看分數';
         
-// 請將舊的 elNext.onclick 整個換成下面這段
-    elNext.onclick = ()=>{
-      if (!answered) return;
-      
-      idx++;
-      
-      // 1. 先判斷是要進入下一題，還是結束測驗
-      if (idx >= questions.length) {
-        finish();
-      } else {
-        render();
-      }
+// 這是最終的解決方案，請完整替換舊的 onclick 區塊
+    elNext.onclick = ()=>{
+      if (!answered) return;
 
-      // 2. 在內容更新完成後，才執行捲動指令
-      // 這樣可以確保無論是下一題或結束畫面，都會跳回頂部
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+      idx++;
+
+      if (idx >= questions.length) {
+        finish();
+      } else {
+        render();
+      }
+
+      // ++ 最終解決方案：使用 setTimeout ++
+      // 這會將捲動指令延遲到瀏覽器下次「有空」時執行，確保成功
+      setTimeout(() => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }, 0);
+    };
 
       }
 
