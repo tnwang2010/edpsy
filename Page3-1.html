@@ -235,8 +235,8 @@
       border: 0;
       border-radius: 12px;
       cursor: pointer;
-      font-size: 16px;
-      padding: 12px 18px;
+      font-size: 14px;
+      padding: 12px 15px;
       font-weight: 700;
     }
     .btn.lg {
@@ -532,16 +532,25 @@
         });
 
         elNext.textContent = (idx < questions.length-1) ? '下一題' : '完成並查看分數';
-        elNext.onclick = ()=>{
-          if (!answered) return;
-          
-// ++ 請換成這一行，就能跳回網頁最頂端 ++
-window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+// 請將舊的 elNext.onclick 整個換成下面這段
+    elNext.onclick = ()=>{
+      if (!answered) return;
+      
+      idx++;
+      
+      // 1. 先判斷是要進入下一題，還是結束測驗
+      if (idx >= questions.length) {
+        finish();
+      } else {
+        render();
+      }
 
-          idx++;
-          if (idx >= questions.length) return finish();
-          render();
-        };
+      // 2. 在內容更新完成後，才執行捲動指令
+      // 這樣可以確保無論是下一題或結束畫面，都會跳回頂部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
       }
 
       function finish(){
