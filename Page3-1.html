@@ -1,0 +1,523 @@
+<div id="quiz-root">
+  <div id="quiz-wrap">
+    <header class="quiz-header">
+      <h1>教育心理學測驗</h1>
+      <div class="meta">
+        <span id="progress">題目 0 / 0</span>
+        <span id="score">分數：0</span>
+      </div>
+    </header>
+
+    <section id="intro-card" class="intro-card">
+      <div class="intro-inner">
+        <div class="intro-smalltag">牛刀小試</div>
+        <div class="intro-topicno" id="introTopicNo">主題 3-1</div>
+        <div class="intro-title" id="introTitle">社會發展</div>
+        <div class="intro-sub" id="introSub"> </div>
+        <div class="intro-author" id="introAuthor">王孜𡩋老師製作</div>
+        <div class="intro-actions">
+          <button id="startBtn" class="btn btn-primary lg">開始測驗</button>
+        </div>
+      </div>
+    </section>
+
+    <main id="quiz-card" class="quiz-card" style="display:none;">
+      <div class="q-head">
+        <span class="badge">單選題</span>
+        <span id="qNo" class="qno">Question 0</span>
+      </div>
+
+      <div id="question" class="question">載入中…</div>
+      <div id="options" class="options"></div>
+      <div id="feedback" class="feedback" aria-live="polite"></div>
+      <div id="source" class="qsource"></div>
+
+      <div class="actions">
+        <button id="aiBtn" class="btn btn-secondary" style="display: none;">請 ChatGPT 解說</button>
+        <button id="perplexityBtn" class="btn btn-secondary" style="display: none;">請 Perplexity 解說</button>
+        <button id="nextBtn" class="btn btn-primary lg" disabled>下一題</button>
+      </div>
+    </main>
+  </div>
+</div>
+
+<style>
+  :root{
+    --yellow:#F4D574;
+    --yellow-bg:#F6E7A9;
+    --paper:#FFF7E6;
+    --ink:#111;
+    --ink-2:#444;
+
+    --neutral:#EFE7D5;
+    --green-bg:#D8F5DF;
+    --green-bd:#66C18C;
+    --green-ink:#14532D;
+    --red-bg:#F9D3D1;
+    --red-bd:#E56A6A;
+    --red-ink:#7F1D1D;
+  }
+
+  #quiz-root{ font-family:'Noto Sans TC',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; background:var(--yellow-bg); padding:16px 0; }
+  #quiz-wrap{ max-width:960px; margin:0 auto; padding:0 16px; }
+
+  .quiz-header{
+    position:relative; background:var(--yellow); color:var(--ink);
+    border:3px solid var(--ink); border-radius:14px; padding:16px 16px 8px;
+  }
+  .quiz-header h1{ margin:0; text-align:center; font-size:26px; letter-spacing:.3px; font-weight:800; }
+  .quiz-header .meta{
+    display:flex; justify-content:space-between; align-items:center;
+    margin-top:10px; font-weight:700; color:var(--ink-2);
+  }
+  .btn-ghost.sm{
+    position:absolute; right:14px; top:14px;
+    background:#F3C245; color:var(--ink); border:1px solid rgba(0,0,0,.25);
+    border-radius:999px; padding:8px 12px; cursor:pointer;
+  }
+
+  .intro-card{
+    background:var(--paper);
+    border:3px solid var(--ink);
+    border-radius:16px;
+    margin-top:18px;
+    padding:28px 20px;
+    text-align:center;
+  }
+  .intro-inner{ max-width:520px; margin:0 auto; }
+  .intro-topline{ color:#6b7280; font-weight:800; letter-spacing:.2em; }
+  .intro-smalltag{
+    display:inline-block; margin:16px 0 20px;
+    background:#f0b33e; color:#fff; font-weight:800;
+    padding:8px 14px; border-radius:999px; letter-spacing:.2px;
+  }
+  .intro-topicno{ color:#e0a200; font-weight:900; font-size:22px; margin-top:4px; }
+  .intro-title{ font-size:42px; font-weight:900; color:#111; margin:6px 0 8px; }
+  .intro-sub{ font-size:22px; font-weight:800; color:#111; border-top:3px solid #111; display:inline-block; padding-top:8px; }
+  .intro-author{ color:#666; margin:38px 0 10px; }
+  .intro-actions{ margin-top:8px; display:flex; justify-content:center; }
+  
+  .btn{ border:0; border-radius:12px; cursor:pointer; font-size:16px; padding:12px 18px; font-weight:700; }
+  .btn.lg{ padding:14px 22px; min-width:220px; font-size:18px; }
+  .btn-primary{ background:#199F4B; color:#fff; }
+  .btn-primary:disabled{ opacity:.6; cursor:not-allowed; }
+  .btn-primary:not(:disabled):hover{ filter:brightness(.95); }
+  .btn-secondary{ background:#5A6472; color:#fff; }
+  .btn-secondary:not(:disabled):hover{ filter:brightness(.95); }
+
+  .quiz-card{
+    background:var(--paper); border:3px solid var(--ink);
+    border-radius:16px; margin-top:18px; padding:22px;
+  }
+  .q-head{ display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+  .badge{
+    background:#F0B33E; color:#fff; font-weight:800; padding:8px 12px; border-radius:999px; letter-spacing:.5px;
+  }
+  .qno{ font-weight:800; font-size:18px; color:var(--ink); }
+
+  .question{
+    font-size:22px; font-weight:800; line-height:1.85; color:#111827; margin:10px 0 16px;
+    white-space:pre-wrap;
+  }
+
+  .options{ display:grid; gap:14px; }
+  .opt{
+    width:100%; text-align:left; border:2px solid transparent; border-radius:14px;
+    background:var(--neutral); padding:14px 16px; font-size:16px; cursor:pointer;
+    transition:.12s ease; font-weight:700; color:#1f2937;
+    white-space:pre-wrap;
+    tab-size:2;
+  }
+  .opt:hover{ transform:translateY(-1px); box-shadow:0 6px 12px rgba(0,0,0,.06); }
+  .opt.disabled{ opacity:1; cursor:default; box-shadow:none; transform:none; }
+  .opt.correct{ background:#D8F5DF; border-color:#66C18C; color:#14532D; box-shadow:0 2px 0 rgba(0,0,0,.06); }
+  .opt.wrong{ background:#F9D3D1; border-color:#E56A6A; color:#7F1D1D; box-shadow:0 2px 0 rgba(0,0,0,.06); }
+
+  .actions{ display:flex; justify-content:center; margin-top:22px; gap:12px; flex-wrap:wrap; }
+
+  .feedback{ margin-top:14px; margin-bottom:10px; font-weight:800; min-height:28px; }
+  .feedback.ok{ color:#14532D; }
+  .feedback.bad{ color:#7F1D1D; }
+  .qsource{ margin-top:12px; font-size:13px; color:#555; font-weight:500; }
+  .feedback + .qsource{ margin-top:12px; }
+  
+/* 1) 避免 iOS Safari 自動放大字（表單/按鈕尤為明顯） */
+html { -webkit-text-size-adjust: 100%; }
+
+/* 2) 左對齊保險（有些容器樣式會覆蓋） */
+.question, .options, .opt, .feedback, .qsource { text-align: left; }
+
+/* 3) 按鈕觸控優化：移除點擊高亮、縮短點擊延遲 */
+.btn, .opt {
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+/* 4) 觸控裝置：移除 hover 動畫與陰影，避免滾動卡卡 */
+@media (hover: none) {
+  .opt { transition: none; }
+  .opt:hover { transform: none; box-shadow: none; }
+}
+
+/* 5) 手機版排版與字級（寬度 ≤ 480px） */
+@media (max-width: 480px) {
+  #quiz-wrap { padding: 0 10px; }
+
+  .quiz-header { padding: 12px 12px 6px; border-width: 2px; }
+  .quiz-header h1 { font-size: clamp(18px, 5.4vw, 22px); }
+  .quiz-header .meta { font-size: 14px; }
+
+  .intro-card, .quiz-card { padding: 16px; border-radius: 12px; border-width: 2px; }
+  .badge { padding: 6px 10px; }
+  .qno { font-size: 16px; }
+
+  /* 題幹：縮小字與行高，讓行動版閱讀不卡 */
+  .question {
+    font-size: clamp(16px, 4.6vw, 18px);
+    line-height: 1.6;
+    margin: 8px 0 12px;
+    font-weight: 700; /* 行動版略降粗度，字形更清楚 */
+  }
+
+  .options { gap: 10px; }
+  .opt {
+    font-size: clamp(15px, 4.4vw, 17px) !important;
+    padding: 12px 14px;
+    border-radius: 12px;
+    text-align: left !important;
+    white-space: pre-wrap;
+    tab-size: 2;
+    font-weight: 600;
+  }
+
+  /* 主行動按鈕滿版，方便點擊 */
+  .btn.lg {
+    min-width: auto;
+    width: 100%;
+    font-size: 16px;
+    padding: 12px 16px;
+  }
+
+  .feedback { margin-top: 12px; }
+  .qsource { margin-top: 10px; font-size: 12px; }
+}
+  
+  
+</style>
+
+<script>
+(() => {
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxY5Tv6M7pUtW4h8VKXG7_iGTFQD8YeO0GrBbuuSoHmnvGnWZ5auw6A-2ehqIb5KJr0Ug/exec';
+  const FILTERS = {
+    action: 'getQuizFromMaster',
+    n: 10,
+    unit: ['教育心理學'],
+    sub:  ['3社會與道德發展',''],
+    tags: ['Bronfenbrenner',''],
+    tags_mode: 'any'
+  };
+
+  const INTRO = {
+    topLine: '教育心理學',
+    topicNo: '主題 3-1',
+    title: '社會發展',
+    sub: 'Bronfenbrenner',
+    author: '王孜𡩋老師製作'
+  };
+
+  const ENABLE_SAVE = false;
+  const STUDENT_ID  = '';
+
+  let questions=[], idx=0, score=0, answered=false;
+  const results = [];
+
+  const $ = s => document.querySelector(s);
+
+  const introCard = $('#intro-card');
+  $('#introTopicNo').textContent = INTRO.topicNo;
+  $('#introTitle').textContent = INTRO.title;
+  $('#introSub').textContent = INTRO.sub;
+  $('#introAuthor').textContent = INTRO.author;
+
+  const quizCard = $('#quiz-card');
+  const elQ   = $('#question'), elOpts = $('#options'), elFb = $('#feedback'), elSrc = $('#source');
+  const elNext= $('#nextBtn'), elProg = $('#progress'), elScore = $('#score');
+  const elQno = $('#qNo');
+  const elFs  = $('#fsBtn'), root = $('#quiz-wrap');
+  const aiBtn = $('#aiBtn');
+  const perplexityBtn = $('#perplexityBtn');
+
+  $('#startBtn').addEventListener('click', async () => {
+    introCard.style.display = 'none';
+    quizCard.style.display = '';
+    await loadQuiz();
+  });
+
+  bindFS();
+
+  async function loadQuiz(){
+    results.length = 0;
+
+    setMeta(0,0);
+    elQ.textContent = '載入題目中…';
+    elOpts.innerHTML = ''; elNext.disabled = true;
+
+    try{
+      const url = `${API_URL}?${toQuery(FILTERS)}`;
+      const res = await fetch(url);
+      const txt = await res.text();
+      let data; try{ data = JSON.parse(txt); }catch(e){ throw new Error('API 非 JSON（可能是權限/登入問題）'); }
+      if (data.error) throw new Error(data.error);
+
+      questions = data.questions || [];
+      if (!questions.length) throw new Error('沒有符合條件的題目。');
+
+      idx = 0; score = 0; answered = false;
+      render();
+    }catch(err){
+      elQ.textContent = '載入失敗：' + err.message;
+    }
+  }
+
+  function render(){
+    setMeta(idx+1, questions.length);
+    const q = questions[idx];
+    elQno.textContent = `Question ${idx+1}`;
+    elQ.textContent = normalizeText(q.question || '');
+
+    elOpts.innerHTML = (q.options||[]).map((opt,i)=>{
+      const label = normalizeText(opt);
+      return `
+        <button class="opt" data-val="${escapeAttr(label)}">
+          ${String.fromCharCode(65+i)}．${escapeHTML(label)}
+        </button>
+      `;
+    }).join('');
+
+    elFb.textContent = ''; elFb.className = 'feedback';
+    elSrc.textContent = '';
+    elSrc.textContent = q.source ? `試題來源：${q.source}` : '';
+    aiBtn.style.display = 'none';
+    perplexityBtn.style.display = 'none';
+
+    answered = false;
+    elNext.disabled = true;
+
+    [...elOpts.querySelectorAll('.opt')].forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        if (answered) return;
+        answered = true;
+
+        const choice = btn.getAttribute('data-val');
+        const correct = normalizeText(q.answer);
+
+        if (q.id) results.push({ id: q.id, correct: (choice === correct) });
+
+        [...elOpts.querySelectorAll('.opt')].forEach(b=>{ b.classList.add('disabled'); });
+        if (choice === correct){
+          score++; btn.classList.add('correct');
+          elFb.textContent = '✅ 答對了！';
+          elFb.classList.add('ok');
+        } else {
+          btn.classList.add('wrong');
+          const ok = [...elOpts.querySelectorAll('.opt')].find(b => b.getAttribute('data-val')===correct);
+          if (ok) ok.classList.add('correct');
+          elFb.textContent = `❌ 答錯了，正解：${correct}`;
+          elFb.classList.add('bad');
+        }
+        elNext.disabled = false;
+        setMeta(idx+1, questions.length);
+
+        aiBtn.style.display = '';
+        perplexityBtn.style.display = '';
+        aiBtn.onclick = () => askChatGPTForExplanation(q);
+        perplexityBtn.onclick = () => askPerplexityForExplanation(q);
+      });
+    });
+
+    elNext.textContent = (idx < questions.length-1) ? '下一題' : '完成並查看分數';
+    elNext.onclick = ()=>{
+      if (!answered) return;
+      idx++;
+      if (idx >= questions.length) return finish();
+      render();
+    };
+  }
+
+  function finish(){
+    if (results.length) {
+      submitStats(results.slice()).catch(()=>{});
+      results.length = 0;
+    }
+
+    elFb.textContent = ''; elFb.className = 'feedback';
+    elSrc.textContent = '';
+    elQ.innerHTML = `✅ 測驗完成！<br>你的分數：<b>${score}</b> / ${questions.length}`;
+    elQno.textContent = '完成';
+    elOpts.innerHTML = '';
+    aiBtn.style.display = 'none';
+    perplexityBtn.style.display = 'none';
+    elNext.textContent = '重新開始作答';
+    elNext.disabled = false;
+    elNext.onclick = ()=>{ quizCard.style.display='none'; introCard.style.display=''; }
+    setMeta(questions.length, questions.length);
+
+    if (ENABLE_SAVE) submitResult().catch(()=>{});
+  }
+  
+  function askChatGPTForExplanation(q) {
+    const questionText = normalizeText(q.question);
+    const answerText = normalizeText(q.answer);
+    const optionsString = q.options.map((opt, i) => {
+      return `${String.fromCharCode(65 + i)}. ${normalizeText(opt)}`;
+    }).join('\n');
+
+    const prompt = `你是一位教育心理學專家，你的任務是為下面的選擇題提供清晰的解說。
+
+**非常重要：** 首先，請分析題幹，判斷這是否為一個「反向題」（例如，題目問「何者不正確」、「下列敘述何者為非」、「何者錯誤」等）。這是最關鍵的步驟。
+
+根據你的分析，請依循以下兩種格式之一來提供解說：
+
+**格式一：若為「正向題」（選擇正確選項）**
+1. 首先說明答案是「${answerText}」。
+2. 詳細解釋為什麼這個選項是符合題幹的正確觀念或敘述。
+3. 簡要說明為什麼其他選項是錯誤的。
+
+**格式二：若為「反向題」（選擇錯誤選項）**
+1. 請明確指出這是一個反向題，目的是要找出題幹中要求的「錯誤」或「不符合」的選項。
+2. 說明因此本題的「答案是」「${answerText}」。
+3. 清楚解釋為什麼這個選項的內容確實是「錯誤」或「不符合題幹條件」的（例如：這個選項的作法不屬於誘導法，因為...）。
+4. 最後，解釋為什麼其他選項雖然是正確的觀念，但在這個反向題中「不是答案」（例如：選項A、C、D 都是誘導法原則的正確應用，所以不選）。
+
+---
+題目資訊如下：
+
+題目：
+${questionText}
+
+選項：
+${optionsString}
+
+答案是：
+${answerText}
+---
+
+現在，請使用繁體中文，並嚴格依照上述最適合的格式提供解說：`;
+
+    const encodedPrompt = encodeURIComponent(prompt);
+    const chatGPTUrl = `https://chat.openai.com/?q=${encodedPrompt}`;
+    window.open(chatGPTUrl, '_blank');
+  }
+
+  function askPerplexityForExplanation(q) {
+    const questionText = normalizeText(q.question);
+    const answerText = normalizeText(q.answer);
+    const optionsString = q.options.map((opt, i) => {
+      return `${String.fromCharCode(65 + i)}. ${normalizeText(opt)}`;
+    }).join('\n');
+
+    const prompt = `你是一位教育心理學專家。你的任務是為下面的選擇題提供清晰的解說。
+
+**非常重要：** 首先，請分析題幹，判斷這是否為一個「反向題」（例如，題目問「何者不正確」、「下列敘述何者為非」、「何者錯誤」等）。這是最關鍵的步驟。
+
+根據你的分析，請依循以下兩種格式之一來提供解說：
+
+**格式一：若為「正向題」（選擇正確選項）**
+1. 首先說明答案是「${answerText}」。
+2. 詳細解釋為什麼這個選項是符合題幹的正確觀念或敘述。
+3. 簡要說明為什麼其他選項是錯誤的。
+
+**格式二：若為「反向題」（選擇錯誤選項）**
+1. 請明確指出這是一個反向題，目的是要找出題幹中要求的「錯誤」或「不符合」的選項。
+2. 說明因此本題的「答案是」「${answerText}」。
+3. 清楚解釋為什麼這個選項的內容確實是「錯誤」或「不符合題幹條件」的（例如：這個選項的作法不屬於誘導法，因為...）。
+4. 最後，解釋為什麼其他選項雖然是正確的觀念，但在這個反向題中「不是答案」（例如：選項A、C、D 都是誘導法原則的正確應用，所以不選）。
+
+---
+題目資訊如下：
+
+題目：
+${questionText}
+
+選項：
+${optionsString}
+
+答案是：
+${answerText}
+---
+
+現在，請使用繁體中文，並嚴格依照上述最適合的格式提供解說：`;
+
+    const encodedPrompt = encodeURIComponent(prompt);
+    const perplexityUrl = `https://www.perplexity.ai/search?q=${encodedPrompt}`;
+    window.open(perplexityUrl, '_blank');
+  }
+
+  function setMeta(cur,total){
+    elProg.textContent = `題目 ${Math.min(cur,total)} / ${total}`;
+    elScore.textContent = `分數：${score}`;
+  }
+
+  async function submitResult(){
+    const payload = {
+      action:'submitResult',
+      unit:(FILTERS.unit||[]).join(','),
+      score, total: questions.length,
+      student:STUDENT_ID || '',
+      filters: JSON.stringify(FILTERS)
+    };
+    const url = `${API_URL}?${toQuery(payload)}`;
+    await fetch(url).catch(()=>{});
+  }
+
+  async function submitStats(items){
+    const payload = {
+      action: 'updateStats',
+      stats: JSON.stringify(items)
+    };
+    const url = `${API_URL}?${toQuery(payload)}`;
+    await fetch(url).catch(()=>{});
+  }
+
+  function bindFS(){
+    updateFsBtn();
+    elFs.addEventListener('click', toggleFS);
+    document.addEventListener('fullscreenchange', updateFsBtn);
+  }
+  function toggleFS(){
+    const isFull = !!document.fullscreenElement;
+    if (!isFull){
+      const el = root;
+      const req = el.requestFullscreen || el.webkitRequestFullscreen || el.msRequestFullscreen;
+      if (req) req.call(el); else alert('此環境不支援全螢幕。');
+    }else{
+      const exit = document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen;
+      if (exit) exit.call(document);
+    }
+  }
+  function updateFsBtn(){
+    const isFull = !!document.fullscreenElement;
+    elFs.textContent = isFull ? '退出全螢幕' : '全螢幕';
+  }
+  function toQuery(obj){
+    const parts=[];
+    for (const [k,v] of Object.entries(obj)){
+      if (v==null || v==='' || (Array.isArray(v)&&!v.length)) continue;
+      parts.push(`${encodeURIComponent(k)}=${encodeURIComponent(Array.isArray(v)?v.join(','):String(v))}`);
+    }
+    return parts.join('&');
+  }
+
+  function normalizeText(s){
+    s = String(s ?? '');
+    s = s.replace(/\r\n/g, '\n');
+    s = s.replace(/\\n/g, '\n');
+    s = s.replace(/\\t/g, '\t');
+    s = s.replace(/\\r/g, '');
+    return s;
+  }
+
+  function escapeHTML(s){return String(s||'').replace(/[&<>"']/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));}
+  function escapeAttr(s){return String(s||'').replace(/"/g,'&quot;').replace(/'/g,'&#39;');}
+})();
+</script>
