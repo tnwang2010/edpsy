@@ -149,37 +149,39 @@ html { -webkit-text-size-adjust: 100%; }
   .opt:hover { transform: none; box-shadow: none; }
 }
 
-/* --- 手機版樣式調整 --- */
+/* --- 手機版樣式（根據截圖大幅調升字體） --- */
 @media (max-width: 480px) {
   #quiz-wrap { padding: 0 10px; }
 
   .quiz-header { padding: 12px 12px 6px; border-width: 2px; }
-  .quiz-header h1 { font-size: 24px; } /* 同 index.html 標題大小 */
-  .quiz-header .meta { font-size: 14px; }
+  .quiz-header h1 { font-size: 24px; }
 
   .intro-card, .quiz-card { padding: 16px; border-radius: 12px; border-width: 2px; }
   .badge { padding: 6px 10px; }
   .qno { font-size: 16px; }
 
+  /* --- 修改：再次大幅調升手機版「題幹」字體 --- */
   .question {
-    font-size: 20px; /* 參考 index.html 連結大小調整 */
+    font-size: 24px; /* 大幅提升，提升閱讀性 */
     line-height: 1.6;
     margin: 8px 0 12px;
     font-weight: 700;
   }
 
   .options { gap: 10px; }
+  /* --- 修改：再次大幅調升手機版「選項」字體並加粗 --- */
   .opt {
-    font-size: 20px !important; /* 同 index.html 連結大小 */
+    font-size: 22px !important; /* 大幅提升，方便點擊 */
     padding: 12px 14px;
     border-radius: 12px;
-    font-weight: 700;
+    font-weight: 700; /* 加粗以匹配 index.html 的視覺感 */
   }
 
+  /* --- 修改：再次調升手機版主要按鈕字體 --- */
   .btn.lg {
     min-width: auto;
     width: 100%;
-    font-size: 18px; /* 讓主要按鈕也清晰好按 */
+    font-size: 20px; /* 提升按鈕文字大小 */
     padding: 12px 16px;
   }
 
