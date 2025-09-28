@@ -57,15 +57,22 @@
     --red-bd:#E56A6A;
     --red-ink:#7F1D1D;
   }
+  
+  /* --- 新增：確保整個頁面都是淡黃色背景 --- */
+  body {
+    background: var(--yellow-bg);
+    margin: 0;
+  }
 
-  #quiz-root{ font-family:'Noto Sans TC',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; background:var(--yellow-bg); padding:16px 0; }
+  #quiz-root{ font-family:'Noto Sans TC',system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial,sans-serif; padding:16px 0; }
   #quiz-wrap{ max-width:960px; margin:0 auto; padding:0 16px; }
 
   .quiz-header{
     position:relative; background:var(--yellow); color:var(--ink);
     border:3px solid var(--ink); border-radius:14px; padding:16px 16px 8px;
   }
-  .quiz-header h1{ margin:0; text-align:center; font-size:26px; letter-spacing:.3px; font-weight:800; }
+  /* --- 修改：標題字體放大 --- */
+  .quiz-header h1{ margin:0; text-align:center; font-size:28px; letter-spacing:.3px; font-weight:800; }
   .quiz-header .meta{
     display:flex; justify-content:space-between; align-items:center;
     margin-top:10px; font-weight:700; color:var(--ink-2);
@@ -91,14 +98,17 @@
     background:#f0b33e; color:#fff; font-weight:800;
     padding:8px 14px; border-radius:999px; letter-spacing:.2px;
   }
-  .intro-topicno{ color:#e0a200; font-weight:900; font-size:22px; margin-top:4px; }
-  .intro-title{ font-size:42px; font-weight:900; color:#111; margin:6px 0 8px; }
-  .intro-sub{ font-size:22px; font-weight:800; color:#111; border-top:3px solid #111; display:inline-block; padding-top:8px; }
+  /* --- 修改：主題字體放大 --- */
+  .intro-topicno{ color:#e0a200; font-weight:900; font-size:24px; margin-top:4px; }
+  .intro-title{ font-size:44px; font-weight:900; color:#111; margin:6px 0 8px; }
+  .intro-sub{ font-size:24px; font-weight:800; color:#111; border-top:3px solid #111; display:inline-block; padding-top:8px; }
+  
   .intro-author{ color:#666; margin:38px 0 10px; }
   .intro-actions{ margin-top:8px; display:flex; justify-content:center; }
   
-  .btn{ border:0; border-radius:12px; cursor:pointer; font-size:16px; padding:12px 18px; font-weight:700; }
-  .btn.lg{ padding:14px 22px; min-width:220px; font-size:18px; }
+  /* --- 修改：按鈕字體放大 --- */
+  .btn{ border:0; border-radius:12px; cursor:pointer; font-size:18px; padding:12px 18px; font-weight:700; }
+  .btn.lg{ padding:14px 22px; min-width:220px; font-size:20px; }
   .btn-primary{ background:#199F4B; color:#fff; }
   .btn-primary:disabled{ opacity:.6; cursor:not-allowed; }
   .btn-primary:not(:disabled):hover{ filter:brightness(.95); }
@@ -115,15 +125,17 @@
   }
   .qno{ font-weight:800; font-size:18px; color:var(--ink); }
 
+  /* --- 修改：題幹字體放大 --- */
   .question{
-    font-size:22px; font-weight:800; line-height:1.85; color:#111827; margin:10px 0 16px;
+    font-size:26px; font-weight:800; line-height:1.85; color:#111827; margin:10px 0 16px;
     white-space:pre-wrap;
   }
 
   .options{ display:grid; gap:14px; }
+  /* --- 修改：選項字體放大 --- */
   .opt{
     width:100%; text-align:left; border:2px solid transparent; border-radius:14px;
-    background:var(--neutral); padding:14px 16px; font-size:20px; /* <--- 已調整，比之前更明顯 */
+    background:var(--neutral); padding:14px 16px; font-size:22px;
     cursor:pointer;
     transition:.12s ease; font-weight:700; color:#1f2937;
     white-space:pre-wrap;
@@ -165,24 +177,26 @@ html { -webkit-text-size-adjust: 100%; }
   #quiz-wrap { padding: 0 10px; }
 
   .quiz-header { padding: 12px 12px 6px; border-width: 2px; }
-  .quiz-header h1 { font-size: clamp(18px, 5.4vw, 22px); }
+  /* --- 修改：手機版標題字體放大 --- */
+  .quiz-header h1 { font-size: clamp(20px, 5.5vw, 24px); }
   .quiz-header .meta { font-size: 14px; }
 
   .intro-card, .quiz-card { padding: 16px; border-radius: 12px; border-width: 2px; }
   .badge { padding: 6px 10px; }
   .qno { font-size: 16px; }
 
-  /* 題幹：縮小字與行高，讓行動版閱讀不卡 */
+  /* --- 修改：手機版題幹字體放大 --- */
   .question {
-    font-size: 20px; /* <--- 已調整，固定大小 */
+    font-size: 22px;
     line-height: 1.6;
     margin: 8px 0 12px;
-    font-weight: 700; /* 行動版略降粗度，字形更清楚 */
+    font-weight: 700;
   }
 
   .options { gap: 10px; }
+  /* --- 修改：手機版選項字體放大 --- */
   .opt {
-    font-size: 18px !important; /* <--- 已調整，固定大小 */
+    font-size: 20px !important;
     padding: 12px 14px;
     border-radius: 12px;
     text-align: left !important;
@@ -191,18 +205,17 @@ html { -webkit-text-size-adjust: 100%; }
     font-weight: 600;
   }
 
-  /* 主行動按鈕滿版，方便點擊 */
+  /* --- 修改：手機版主按鈕字體放大 --- */
   .btn.lg {
     min-width: auto;
     width: 100%;
-    font-size: 16px;
+    font-size: 18px;
     padding: 12px 16px;
   }
 
   .feedback { margin-top: 12px; }
   .qsource { margin-top: 10px; font-size: 12px; }
 }
-  
   
 </style>
 
