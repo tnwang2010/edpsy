@@ -123,7 +123,8 @@
   .options{ display:grid; gap:14px; }
   .opt{
     width:100%; text-align:left; border:2px solid transparent; border-radius:14px;
-    background:var(--neutral); padding:14px 16px; font-size:16px; cursor:pointer;
+    background:var(--neutral); padding:14px 16px; font-size:18px; /* <-- 已調整 */
+    cursor:pointer;
     transition:.12s ease; font-weight:700; color:#1f2937;
     white-space:pre-wrap;
     tab-size:2;
@@ -173,7 +174,7 @@ html { -webkit-text-size-adjust: 100%; }
 
   /* 題幹：縮小字與行高，讓行動版閱讀不卡 */
   .question {
-    font-size: clamp(16px, 4.6vw, 18px);
+    font-size: clamp(18px, 5.0vw, 20px); /* <-- 已調整 */
     line-height: 1.6;
     margin: 8px 0 12px;
     font-weight: 700; /* 行動版略降粗度，字形更清楚 */
@@ -181,7 +182,7 @@ html { -webkit-text-size-adjust: 100%; }
 
   .options { gap: 10px; }
   .opt {
-    font-size: clamp(15px, 4.4vw, 17px) !important;
+    font-size: clamp(17px, 4.8vw, 19px) !important; /* <-- 已調整 */
     padding: 12px 14px;
     border-radius: 12px;
     text-align: left !important;
