@@ -166,7 +166,7 @@
       line-height: 1.5;
       color: #111827;
       margin: 8px 0 24px;
-      white-space: pre-wrap;
+  /* white-space: pre-wrap;  */
     }
     .options {
       display: grid;
@@ -404,7 +404,6 @@
   </div>
 
   <script>
-    // JavaScript 程式碼維持不變
     (() => {
       const API_URL = 'https://script.google.com/macros/s/AKfycbxY5Tv6M7pUtW4h8VKXG7_iGTFQD8YeO0GrBbuuSoHmnvGnWZ5auw6A-2ehqIb5KJr0Ug/exec';
       const FILTERS = {
@@ -429,6 +428,7 @@
 
       let questions=[], idx=0, score=0, answered=false;
       const results = [];
+      const wrongQuestions = [];
 
       const $ = s => document.querySelector(s);
 
@@ -453,6 +453,7 @@
 
       async function loadQuiz(){
         results.length = 0;
+        wrongQuestions.length = 0;
 
         setMeta(0,0);
         elQ.textContent = '載入題目中，請耐心等候5-10秒…';
@@ -520,6 +521,7 @@
               if (ok) ok.classList.add('correct');
               elFb.textContent = `❌ 答錯了，正解：${correct}`;
               elFb.classList.add('bad');
+              wrongQuestions.push({ question: q, userChoice: choice });
             }
             elNext.disabled = false;
             setMeta(idx+1, questions.length);
@@ -532,26 +534,19 @@
         });
 
         elNext.textContent = (idx < questions.length-1) ? '下一題' : '完成並查看分數';
-        
-// 這是最終的解決方案，請完整替換舊的 onclick 區塊
-    elNext.onclick = ()=>{
-      if (!answered) return;
 
-      idx++;
-
-      if (idx >= questions.length) {
-        finish();
-      } else {
-        render();
-      }
-
-      // ++ 最終解決方案：使用 setTimeout ++
-      // 這會將捲動指令延遲到瀏覽器下次「有空」時執行，確保成功
-      setTimeout(() => {
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }, 0);
-    };
-
+        elNext.onclick = ()=>{
+          if (!answered) return;
+          idx++;
+          if (idx >= questions.length) {
+            finish();
+          } else {
+            render();
+          }
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 0);
+        };
       }
 
       function finish(){
@@ -562,14 +557,59 @@
 
         elFb.textContent = ''; elFb.className = 'feedback';
         elSrc.textContent = '';
-        elQ.innerHTML = `✅ 測驗完成！<br>你的分數：<b>${score}</b> / ${questions.length}`;
+
+        let resultHTML = `<div style="text-align:center; margin-bottom: 24px;">✅ 測驗完成！<br>你的分數：<b>${score}</b> / ${questions.length}</div>`;
+
+        if(wrongQuestions.length > 0) {
+            resultHTML += `<div style="margin-top: 24px; padding-top: 2px; border-top: 2px solid #ddd; text-align: left;">
+                            <h3 style="margin: 0 0 16px; font-size: 20px;">答錯試題彙整：</h3>`;
+
+            // ++ 修改：更新錯題彙整的樣式
+            wrongQuestions.forEach(item => {
+                const q = item.question;
+                const userChoice = item.userChoice;
+                const correctAnswer = normalizeText(q.answer);
+
+                resultHTML += `<div style="background-color: var(--paper); border: 2px solid #E0D4B9; border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+                                <p style="font-size: 22px; font-weight: 700; margin: 0 0 12px; line-height: 1.6;">${escapeHTML(normalizeText(q.question))}</p>
+                                <ul style="list-style-type: none; padding-left: 0; margin: 0; font-size: 18px;">`;
+
+                q.options.forEach(opt => {
+                    const optionText = normalizeText(opt);
+                    let indicator = '';
+                    let style = 'color: #333; padding: 8px 12px; border-radius: 8px;';
+
+                    if (optionText === correctAnswer) {
+                        indicator = ' (正解)';
+                        style += 'background-color: var(--green-bg); color: var(--green-ink); font-weight: bold;';
+                    } else if (optionText === userChoice) {
+                        indicator = ' (你的答案)';
+                        style += 'background-color: var(--red-bg); color: var(--red-ink);';
+                    } else {
+                        style += 'background-color: var(--neutral);';
+                    }
+
+                    resultHTML += `<li style="margin-bottom: 8px; ${style}">${escapeHTML(optionText)}${indicator}</li>`;
+                });
+
+                resultHTML += `</ul></div>`;
+            });
+
+            resultHTML += `</div>`;
+        }
+
+
+        elQ.innerHTML = resultHTML;
         elQno.textContent = '完成';
         elOpts.innerHTML = '';
         aiBtn.style.display = 'none';
         perplexityBtn.style.display = 'none';
         elNext.textContent = '重新開始作答';
         elNext.disabled = false;
-        elNext.onclick = ()=>{ quizCard.style.display='none'; introCard.style.display=''; }
+        elNext.onclick = ()=>{
+            quizCard.style.display='none';
+            introCard.style.display='';
+        }
         setMeta(questions.length, questions.length);
 
         if (ENABLE_SAVE) submitResult().catch(()=>{});
