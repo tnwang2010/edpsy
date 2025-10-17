@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>連結尚未開放 - 敬請期待</title>
+    <!-- 載入 Noto Sans TC 字體 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap" rel="stylesheet">
+    <style>
+        /* --- CSS Variables (色彩與字體設定) --- */
+        :root {
+            --yellow: #F4D574;
+            --yellow-bg: #F6E7A9;
+            --paper: #FFF7E6;
+            --ink: #111;
+            --ink-2: #444;
+
+            --neutral: #EFE7D5;
+            --green-bg: #D8F5DF;
+            --green-bd: #66C18C;
+            --green-ink: #14532D;
+            --red-bg: #F9D3D1;
+            --red-bd: #E56A6A;
+            --red-ink: #7F1D1D;
+
+            /* 使用 Google Fonts 提供的 Noto Sans TC 字體 */
+            --font-family: 'Noto Sans TC', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        /* --- Base & Reset (基礎與重置樣式) --- */
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
+        body {
+            background: var(--yellow-bg);
+            margin: 0;
+            font-family: var(--font-family);
+        }
+        .btn, .opt {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        * {
+            box-sizing: border-box;
+        }
+
+        /* --- Layout (主要版面配置) --- */
+        #quiz-root {
+            padding: 16px 0;
+        }
+        #quiz-wrap {
+            max-width: 960px;
+            margin: 0 auto;
+            padding: 0 12px;
+        }
+
+        /* --- Header (頁首) --- */
+        .quiz-header {
+            background: var(--yellow);
+            color: var(--ink);
+            border: 2px solid var(--ink);
+            border-radius: 12px;
+            padding: 12px 12px 6px;
+            text-align: center;
+        }
+        .quiz-header h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: .3px;
+            font-weight: 800;
+        }
+        .quiz-header .meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--ink-2);
+        }
+
+        /* --- Intro Card (測驗封面) --- */
+        .intro-card {
+            background: var(--paper);
+            border: 2px solid var(--ink);
+            border-radius: 12px;
+            margin-top: 18px;
+            padding: 24px 16px;
+            text-align: center;
+        }
+        .intro-inner {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .intro-smalltag {
+            display: inline-block;
+            margin: 16px 0 20px;
+            font-size: 20px;
+            background: #f0b33e;
+            color: #fff;
+            font-weight: 800;
+            padding: 8px 24px;
+            border-radius: 999px;
+            letter-spacing: .2px;
+        }
+        .intro-topicno {
+            color: #e0a200;
+            font-weight: 900;
+            font-size: 26px;
+        }
+        .intro-title {
+            font-size: 42px;
+            font-weight: 900;
+            color: var(--red-ink); /* 特別改用紅色系強調 '未開放' */
+            margin: 6px 0 8px;
+        }
+        .intro-sub {
+            font-size: 30px;
+            font-weight: 800;
+            color: #111;
+            border-top: 3px solid #111;
+            display: inline-block;
+            padding-top: 8px;
+        }
+        .intro-author {
+            color: #666;
+            font-size: 16px;
+            margin: 32px 0 10px;
+        }
+        .intro-actions {
+            margin-top: 8px;
+            display: flex;
+            justify-content: center;
+        }
+        
+        /* 自訂未開放頁面樣式 */
+        .not-ready-message {
+            margin: 40px 0;
+            font-size: 20px;
+            line-height: 1.8;
+            color: var(--ink-2);
+            font-weight: 600;
+        }
+        .not-ready-message strong {
+            color: var(--ink);
+            font-weight: 900;
+            padding: 0 4px;
+            border-bottom: 3px dashed var(--yellow);
+        }
+
+        /* --- Quiz Card (測驗題目卡片) --- (保留但未啟用) */
+        /* .quiz-card { ... } */
+        /* ... 省略未使用的測驗卡片樣式 ... */
+        
+        /* --- Buttons & Actions (按鈕與操作區) --- */
+        .actions {
+            display: flex;
+            justify-content: center;
+            margin-top: 22px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            border: 0;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            padding: 12px 15px;
+            font-weight: 700;
+            text-align: center;
+        }
+        .btn.lg {
+            padding: 14px 22px;
+            width: 100%; /* 手機版按鈕滿版 */
+            font-size: 20px;
+        }
+        .btn-primary {
+            background: #199F4B;
+            color: #fff;
+        }
+        .btn-secondary {
+            background: #5A6472;
+            color: #fff;
+        }
+
+        /*******************************************/
+        /* --- Desktop Styles (桌面版樣式) --- */
+        /*******************************************/
+        @media (min-width: 768px) {
+            #quiz-wrap {
+                padding: 0 16px;
+            }
+
+            /* --- Header --- */
+            .quiz-header {
+                border-width: 3px;
+                border-radius: 14px;
+                padding: 16px 16px 8px;
+            }
+            .quiz-header h1 {
+                font-size: 32px;
+            }
+            /* .quiz-header .meta { ... } */
+
+            /* --- Intro Card --- */
+            .intro-card {
+                border-width: 3px;
+                border-radius: 16px;
+                padding: 28px 20px;
+            }
+            .intro-smalltag {
+                font-size: 24px;
+            }
+            /* .intro-topicno { ... } */
+            .intro-title {
+                font-size: 56px;
+            }
+            .intro-sub {
+                font-size: 40px;
+            }
+            .intro-author {
+                font-size: 22px;
+                margin: 38px 0 10px;
+            }
+            .not-ready-message {
+                font-size: 24px;
+            }
+
+            /* --- Buttons --- */
+            .btn.lg {
+                min-width: 220px;
+                width: auto; /* 桌面版按鈕恢復自動寬度 */
+                font-size: 24px;
+            }
+            .btn-primary:not(:disabled):hover,
+            .btn-secondary:not(:disabled):hover {
+                filter: brightness(.95);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="quiz-root">
+        <div id="quiz-wrap">
+
+            <!-- 頁首：延用測驗主題標題樣式 -->
+            <header class="quiz-header">
+                <h1>教育心理學測驗</h1>
+                <div class="meta">
+                    <span>⏳ 開放時間：即將公告</span>
+                </div>
+            </header>
+
+            <!-- 內容卡片：延用 Intro Card 樣式 -->
+            <main class="intro-card">
+                <div class="intro-inner">
+                    <!-- 趣味標籤 -->
+                    <p class="intro-smalltag">💥 連結防爆裝置啟動 💥</p>
+
+                    <!-- 主要警告標題 -->
+                    <h2 class="intro-title">🚧 還沒準備好！</h2>
+
+                    <!-- 次要提示 -->
+                    <p class="intro-sub">（你偷跑被抓到囉）</p>
+
+                    <!-- 俏皮的訊息內容 -->
+                    <div class="not-ready-message">
+                        <p>這個主題的測驗還在孜𡩋老師的「秘密校稿室」裡，</p>
+                        <p>為了確保呈現最完美的狀態，得請你再等等喔！</p>
+                        <p>建議先複習其他已經開放的主題，</p>
+                        <p>等開放之後，我們再一起挑戰吧！😉</p>
+                    </div>
+                    
+                    <!-- 動作按鈕 -->
+                    <div class="intro-actions">
+                        <!-- 點擊會導向指定的主題列表連結 -->
+                        <a href="https://sites.google.com/view/tn-edpsy/quiz" class="btn btn-secondary lg" style="text-decoration: none; display: inline-block;">
+                            返回主題列表
+                        </a>
+                    </div>
+
+                    <!-- 頁腳作者資訊 (使用 intro-author 樣式) -->
+                    <p class="intro-author">
+                        王孜𡩋老師製作 &copy;2025
+                    </p>
+                </div>
+            </main>
+
+        </div>
+    </div>
+</body>
+</html>
