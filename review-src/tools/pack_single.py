@@ -9,7 +9,7 @@ src, dst = sys.argv[1], sys.argv[2]
 d = os.path.dirname(src)
 page = open(src, encoding="utf-8").read()
 css = open(os.path.join(d, "../assets/review.css"), encoding="utf-8").read()
-page = page.replace('<link rel="stylesheet" href="../assets/review.css">', f"<style>\n{css}</style>")
+page = re.sub(r'<link rel="stylesheet" href="../assets/review.css[^"]*">', lambda m: f"<style>\n{css}</style>", page)
 
 def data_uri(m):
     raw = open(os.path.join(d, m.group(1)), "rb").read()

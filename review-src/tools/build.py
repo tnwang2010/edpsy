@@ -6,10 +6,12 @@
   各週內容：review-src/weekNN/content.py；投影片圖：review-src/weekNN/slides/<key>.jpg
   輸出：review/ 整個資料夾重新產生（index.html、assets/、weekNN/），請勿手動修改 review/
 """
-import html, json, os, re, runpy, shutil, sys
+import hashlib, html, json, os, re, runpy, shutil, sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # review-src/
 OUT = os.path.join(os.path.dirname(ROOT), "review")
+# version tag appended to the stylesheet URL, so browsers fetch the new CSS as soon as it changes
+CSS_V = hashlib.md5(open(os.path.join(ROOT, "assets/review.css"), "rb").read()).hexdigest()[:8]
 
 
 def inline(md):
@@ -106,7 +108,7 @@ def page(w, weeks, out):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700&display=swap">
-<link rel="stylesheet" href="../assets/review.css">
+<link rel="stylesheet" href="../assets/review.css?v={CSS_V}">
 </head>
 <body id="top">
 <div class="layout">
@@ -184,7 +186,7 @@ def home(weeks, out):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Serif+TC:wght@700&display=swap">
-<link rel="stylesheet" href="assets/review.css">
+<link rel="stylesheet" href="assets/review.css?v={CSS_V}">
 </head>
 <body>
 <main class="home">
