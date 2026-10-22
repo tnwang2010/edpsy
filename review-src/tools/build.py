@@ -97,6 +97,9 @@ def page(w, weeks, out):
             body.append(f'<div class="tbl"><table><thead><tr>{th}</tr></thead><tbody>{trs}</tbody></table></div>')
 
     byline = "".join(f"<span>{inline(x)}</span>" for x in head["byline"].split("｜"))
+    # 導言與作者資訊依 content.py 裡的先後順序排列
+    intro = "\n    ".join(f'<p class="dek">{inline(b[1])}</p>' if b[0] == "dek" else f'<p class="byline">{byline}</p>'
+                          for b in blocks if b[0] in ("dek", "byline"))
     foot = inline(head["foot"]).replace(
         "「牛刀小試」", '「<a href="https://sites.google.com/view/tn-edpsy/quiz" target="_blank" rel="noopener">牛刀小試</a>」')
     doc = f"""<!doctype html>
@@ -113,12 +116,11 @@ def page(w, weeks, out):
 <body id="top">
 <div class="layout">
 {sidebar(weeks, w["week"])}
-<article class="post">
+<article class="post" data-week="{w['week']}">
   <header class="post-head">
-    <p class="tag">{inline(head["label"])}</p>
+    <p class="tag"><a class="crumb" href="../">課後複習首頁</a><span class="sep" aria-hidden="true">›</span>{inline(head["label"])}</p>
     <h1>{inline(head["title"])}</h1>
-    <p class="dek">{inline(head["dek"])}</p>
-    <p class="byline">{byline}</p>
+    {intro}
   </header>
   <div class="body">
     {chr(10).join("    " + x for x in body).strip()}
