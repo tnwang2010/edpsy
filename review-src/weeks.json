@@ -1,5 +1,5 @@
 [
   {"week": 1, "topic": "教育心理學概論", "content": "week01/content.py"},
-  {"week": 2, "topic": null, "content": null},
+  {"week": 2, "topic": "認知發展", "content": "week02/content.py"},
   {"week": 3, "topic": null, "content": null}
 ]
