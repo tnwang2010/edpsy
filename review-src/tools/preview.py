@@ -7,7 +7,7 @@ import re
 from html.parser import HTMLParser
 from pathlib import Path
 from urllib.parse import quote, unquote, urljoin, urlsplit, urlunsplit
-from urllib.request import urlopen
+from urllib.request import Request, urlopen
 
 ROOT = Path(__file__).resolve().parents[2]
 
@@ -60,7 +60,8 @@ def main():
 
     def verify(path):
         url = urljoin(base, quote(path.relative_to(ROOT).as_posix()))
-        with urlopen(url, timeout=30) as response:
+        request = Request(url, headers={"User-Agent": "Mozilla/5.0 (compatible; EdpsyPreview/1.0)"})
+        with urlopen(request, timeout=30) as response:
             data = response.read()
             mime = response.headers.get_content_type()
         expected = {".html": "text/html", ".css": "text/css", ".jpg": "image/jpeg"}.get(path.suffix)
