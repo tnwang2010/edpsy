@@ -158,14 +158,23 @@ def page(w, weeks, out):
 
 
 def home(weeks, out):
-    """review/index.html：已上線週次的列表。"""
-    cards = []
+    """review/index.html：各週卡片（日期、主題、各節大綱），未上線的週次顯示為預告。"""
+    cards, soon = [], []
     for w in weeks:
+        label = f"第 {w['week']} 週"
         if not w["blocks"]:
+            soon.append(f'<div class="wcard off"><span class="wnum">{label}</span><span class="wsoon">尚未上線</span></div>')
             continue
-        h = {b[0]: b[1] for b in w["blocks"] if b[0] in ("label", "title", "dek")}
-        cards.append(f'<a class="card" href="week{w["week"]:02d}/"><span class="wk">{inline(h["label"])}</span>'
-                     f'<h2>{inline(h["title"])}</h2><p>{inline(h["dek"])}</p></a>')
+        h = {b[0]: b[1] for b in w["blocks"] if b[0] in ("title", "byline")}
+        wk = f"week{w['week']:02d}"
+        date = re.search(r"(\d{4})/(\d{2})/(\d{2})", h["byline"])
+        when = f'<span class="wdate">{int(date[2])}/{int(date[3])} 上課</span>' if date else ""
+        heads = outline(w["blocks"])
+        secs = "".join(f"<li>{inline(t)}</li>" for t, _ in heads)
+        cards.append(f'<a class="wcard" href="{wk}/">'
+                     f'<div class="wbody"><div class="wmeta"><span class="wnum">{label}</span>{when}</div>'
+                     f'<h2>{inline(w["topic"])}</h2><p class="wtitle">{inline(h["title"])}</p>'
+                     f'<ol class="wsecs" style="--rows:{(len(heads) + 1) // 2}">{secs}</ol><span class="wgo">開始閱讀 →</span></div></a>')
     doc = f"""<!doctype html>
 <html lang="zh-Hant">
 <head>
@@ -179,9 +188,13 @@ def home(weeks, out):
 </head>
 <body>
 <main class="home">
-  <h1>課後複習</h1>
-  <p class="intro">依<span class="name">王孜𡩋</span>老師每週課堂內容與投影片整理，適合缺課或想複習的同學閱讀。</p>
-  {"".join(cards)}
+  <header class="home-head">
+    <p class="tag">115學士後教育學分班｜教育心理學</p>
+    <h1>課後複習</h1>
+    <p class="intro">依<span class="name">王孜𡩋</span>老師每週課堂內容與投影片整理，適合缺課或想複習的同學閱讀。點選下方的週次進入；進入後可用「各週大綱」跳到任一節。</p>
+  </header>
+  <div class="wlist">{"".join(cards)}</div>
+  {f'<div class="wsoon-row">{"".join(soon)}</div>' if soon else ""}
 </main>
 </body>
 </html>
