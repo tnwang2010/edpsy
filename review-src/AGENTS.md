@@ -44,6 +44,15 @@ python3 review-src/tools/build.py
 
 文字中可用 `**粗體**` 與 `==螢光標示==`，其他 Markdown 語法不支援。
 
+## 投影片圖片的來源
+
+每週的投影片圖都取自王老師的 Google 簡報（第 1 週：https://docs.google.com/presentation/d/1ZddoQpoF_K5d4-Y594AfRRjVgY0xuZWPT7cfROGen54 ），`content.py` 開頭的 `SLIDES` 記錄每張圖對應的投影片 ID。
+AI 助手**打不開這份簡報**，所以：
+
+- 要換圖時，請老師提供該張投影片匯出的圖檔（Google 簡報：「檔案 → 下載 → PNG 圖片」，下載的是目前這一張），不要用螢幕截圖；截圖常會帶到「連結的投影片」按鈕等介面元素，或把邊緣切掉。
+- 圖檔請存成 1600×900 的 JPG，覆蓋 `review-src/weekNN/slides/<key>.jpg`，並把 `SLIDES` 裡對應的 ID 一併更新（若老師有提供）。
+- 只收到截圖、沒有原始圖檔時，請在 PR 說明中註明「此圖為截圖，建議改用投影片匯出圖」。
+
 ## 寫作規則（王老師的要求）
 
 1. 只寫課堂上實際講過的內容，不寫課堂沒講的東西，不放同學的討論與發言。
