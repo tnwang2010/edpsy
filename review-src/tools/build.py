@@ -44,7 +44,7 @@ def sidebar(weeks, current):
             groups.append(f'<div class="wk off"><span>{label}</span><span class="soon">尚未上線</span></div>')
             continue
         here = w["week"] == current
-        base = "" if here else f"../{wk}/"
+        base = "" if here else f"../{wk}/index.html"
         secs = []
         for i, (h2, h3s) in enumerate(outline(w["blocks"]), 1):
             subs = "".join(f'<li><a href="{base}#s{i}-{j}">{inline(t)}</a></li>' for j, t in enumerate(h3s, 1))
@@ -118,7 +118,7 @@ def page(w, weeks, out):
 {sidebar(weeks, w["week"])}
 <article class="post" data-week="{w['week']}">
   <header class="post-head">
-    <p class="tag"><a class="crumb" href="../">課後複習首頁</a><span class="sep" aria-hidden="true">›</span>{inline(head["label"])}</p>
+    <p class="tag"><a class="crumb" href="../index.html">課後複習首頁</a><span class="sep" aria-hidden="true">›</span>{inline(head["label"])}</p>
     <h1>{inline(head["title"])}</h1>
     {intro}
   </header>
@@ -175,7 +175,7 @@ def home(weeks, out):
         when = f'<span class="wdate">{int(date[2])}/{int(date[3])} 上課</span>' if date else ""
         heads = outline(w["blocks"])
         secs = "".join(f"<li>{inline(t)}</li>" for t, _ in heads)
-        cards.append(f'<a class="wcard" href="{wk}/">'
+        cards.append(f'<a class="wcard" href="{wk}/index.html">'
                      f'<div class="wbody"><div class="wmeta"><span class="wnum">{label}</span>{when}</div>'
                      f'<h2>{inline(w["topic"])}</h2><p class="wtitle">{inline(h["title"])}</p>'
                      f'<ol class="wsecs" style="--rows:{(len(heads) + 1) // 2}">{secs}</ol><span class="wgo">開始閱讀 →</span></div></a>')
