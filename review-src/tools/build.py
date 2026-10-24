@@ -17,6 +17,8 @@ CSS_V = hashlib.md5(open(os.path.join(ROOT, "assets/review.css"), "rb").read()).
 def inline(md):
     """**粗體** 與 ==螢光== → HTML；其餘字元跳脫。"""
     s = html.escape(md, quote=False)
+    # 長英文字標成英文，讓手機窄欄可以加連字號斷字，避免兩端對齊時整行被拉開
+    s = re.sub(r"(?<![A-Za-z])[A-Za-z][A-Za-z'’-]{6,}(?![A-Za-z])", r'<span lang="en">\g<0></span>', s)
     s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"==(.+?)==", r'<span class="mark">\1</span>', s)
     return s.replace("王孜𡩋", '<span class="name">王孜𡩋</span>')

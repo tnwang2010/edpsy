@@ -14,7 +14,12 @@ html{scroll-behavior:smooth;scroll-padding-top:24px}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font-sans);font-size:112.5%;line-height:1.9;letter-spacing:.01em;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-p,li{margin:0;text-wrap:pretty}
+p,li{margin:0;text-wrap:pretty;text-align:justify}
+/* 中文標題只在標點或空格處換行，避免把詞拆開；過長時仍可斷行 */
+h1,h2,h3{word-break:keep-all;overflow-wrap:anywhere}
+/* 本文兩端對齊；長英文字可斷字，作者資訊維持靠左 */
+[lang=en]{-webkit-hyphens:auto;hyphens:auto}
+.byline{text-align:left}
 a{color:var(--accent);text-underline-offset:3px}
 :focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:3px}
 ::selection{background:var(--hl)}
