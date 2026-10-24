@@ -8,6 +8,9 @@
 """
 import hashlib, html, json, os, re, runpy, shutil, sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from headings import MARK, mark  # noqa: E402
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # review-src/
 OUT = os.path.join(os.path.dirname(ROOT), "review")
 # version tag appended to the stylesheet URL, so browsers fetch the new CSS as soon as it changes
@@ -22,6 +25,11 @@ def inline(md):
     s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
     s = re.sub(r"==(.+?)==", r'<span class="mark">\1</span>', s)
     return s.replace("王孜𡩋", '<span class="name">王孜𡩋</span>')
+
+
+def heading(md):
+    """標題：在詞組之間放 <wbr>，讓標題只在詞與詞之間或標點處換行（見 headings.py）。"""
+    return inline(mark(md)).replace(MARK, "<wbr>")
 
 
 def toc_of(blocks):
@@ -76,11 +84,11 @@ def page(w, weeks, out):
         elif k == "p":
             body.append(f"<p>{inline(b[1])}</p>")
         elif k == "h2":
-            n += 1; m = 0; body.append(f'<h2 id="s{n}">{inline(b[1])}</h2>')
+            n += 1; m = 0; body.append(f'<h2 id="s{n}">{heading(b[1])}</h2>')
         elif k == "h2plain":
-            body.append(f'<h2 class="plain">{inline(b[1])}</h2>')
+            body.append(f'<h2 class="plain">{heading(b[1])}</h2>')
         elif k == "h3":
-            m += 1; body.append(f'<h3 id="s{n}-{m}">{inline(b[1])}</h3>')
+            m += 1; body.append(f'<h3 id="s{n}-{m}">{heading(b[1])}</h3>')
         elif k in ("ul", "ol"):
             cls = ' class="sources"' if body and body[-1].startswith('<h2 class="plain"') else ""
             body.append(f"<{k}{cls}>" + "".join(f"<li>{inline(t)}</li>" for t in b[1]) + f"</{k}>")
@@ -121,7 +129,7 @@ def page(w, weeks, out):
 <article class="post" data-week="{w['week']}">
   <header class="post-head">
     <p class="tag"><a class="crumb" href="../index.html">課後複習首頁</a><span class="sep" aria-hidden="true">›</span>{inline(head["label"])}</p>
-    <h1>{inline(head["title"])}</h1>
+    <h1>{heading(head["title"])}</h1>
     {intro}
   </header>
   <div class="body">
