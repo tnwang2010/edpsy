@@ -9,7 +9,7 @@
 import hashlib, html, json, os, re, runpy, shutil, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from headings import MARK, mark  # noqa: E402
+from headings import MARK, mark, _width as width  # noqa: E402
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # review-src/
 OUT = os.path.join(os.path.dirname(ROOT), "review")
@@ -27,9 +27,27 @@ def inline(md):
     return s.replace("王孜𡩋", '<span class="name">王孜𡩋</span>')
 
 
-def heading(md):
-    """標題：在詞組之間放 <wbr>，讓標題只在詞與詞之間或標點處換行（見 headings.py）。"""
-    return inline(mark(md)).replace(MARK, "<wbr>")
+def heading(md, limit):
+    """標題：在詞組之間放 <wbr>，讓標題只在詞與詞之間或標點處換行（見 headings.py）。
+    limit 是手機窄螢幕一行大約放得下的字數，h1、h2 字大，limit 較小。"""
+    return inline(mark(md, limit)).replace(MARK, "<wbr>")
+
+
+NW_OPEN, NW_CLOSE, WBR = "\ue001", "\ue002", "\ue003"  # 不斷行片段的暫代字元，產生 HTML 時換成 <span class="nw">
+
+
+def keep_cite(text):
+    """圖說括號裡的引用：每一筆文獻（以「；」或「;」分隔）內部不斷開，筆與筆之間可以換行。"""
+    def one(m):
+        pieces = re.findall(r"[^；;]+[；;]?\s*", m.group(0))
+        out = ""
+        for p in pieces:  # 全形「；」後直接可換行，半形「;」後保留空格
+            p = p.strip()
+            short = width(p) <= 14  # 太長的一筆（約超過 14 個中文字寬）照常換行，避免小手機左右捲動
+            sep = "" if not out else " " if out.rstrip(NW_CLOSE).endswith(";") else "<wbr>"
+            out += sep + (NW_OPEN + p + NW_CLOSE if short else p)
+        return out.replace("<wbr>", WBR)
+    return re.sub(r"（[^（）]*）", one, text)
 
 
 def toc_of(blocks):
@@ -84,11 +102,11 @@ def page(w, weeks, out):
         elif k == "p":
             body.append(f"<p>{inline(b[1])}</p>")
         elif k == "h2":
-            n += 1; m = 0; body.append(f'<h2 id="s{n}">{heading(b[1])}</h2>')
+            n += 1; m = 0; body.append(f'<h2 id="s{n}">{heading(b[1], 9)}</h2>')
         elif k == "h2plain":
-            body.append(f'<h2 class="plain">{heading(b[1])}</h2>')
+            body.append(f'<h2 class="plain">{heading(b[1], 9)}</h2>')
         elif k == "h3":
-            m += 1; body.append(f'<h3 id="s{n}-{m}">{heading(b[1])}</h3>')
+            m += 1; body.append(f'<h3 id="s{n}-{m}">{heading(b[1], 12)}</h3>')
         elif k in ("ul", "ol"):
             cls = ' class="sources"' if body and body[-1].startswith('<h2 class="plain"') else ""
             body.append(f"<{k}{cls}>" + "".join(f"<li>{inline(t)}</li>" for t in b[1]) + f"</{k}>")
@@ -96,7 +114,7 @@ def page(w, weeks, out):
             key, cap = b[1], b[2]
             shutil.copyfile(f"{ROOT}/{wk}/slides/{key}.jpg", f"{out}/{wk}/slides/{key}.jpg")
             body.append(f'<figure class="slide"><img src="slides/{key}.jpg" alt="投影片：{html.escape(cap)}" '
-                        f'width="1600" height="900" loading="lazy"><figcaption>{inline(cap)}</figcaption></figure>')
+                        f'width="1600" height="900" loading="lazy"><figcaption><span>{inline(keep_cite(cap)).replace(NW_OPEN, '<span class="nw">').replace(NW_CLOSE, '</span>').replace(WBR, '<wbr>')}</span></figcaption></figure>')
         elif k == "note":
             lines = "".join(f"<p>{inline(t)}</p>" for t in b[2])
             body.append(f'<aside class="note"><span class="t">{inline(b[1])}</span>{lines}</aside>')
@@ -129,7 +147,7 @@ def page(w, weeks, out):
 <article class="post" data-week="{w['week']}">
   <header class="post-head">
     <p class="tag"><a class="crumb" href="../index.html">課後複習首頁</a><span class="sep" aria-hidden="true">›</span>{inline(head["label"])}</p>
-    <h1>{heading(head["title"])}</h1>
+    <h1>{heading(head["title"], 8)}</h1>
     {intro}
   </header>
   <div class="body">

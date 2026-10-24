@@ -39,8 +39,15 @@ def _units(chunks):
     return out
 
 
-def mark(text):
-    """在中文詞組之間插入 MARK；英文、數字與標點前後不另加換行點。"""
+def _width(s):
+    """估計寬度（以中文字為 1）：中文與全形標點算 1，英文、數字約 0.55。"""
+    return sum(1 if re.match(f"[{HAN}{PUNCT}]", c) else 0.3 if c in " \u00a0" else 0.55 for c in s if c != MARK)
+
+
+def mark(text, limit):
+    """在中文詞組之間插入 MARK；英文、數字與標點前後不另加換行點。
+    以標點切開的短句若在 limit 字以內（手機一行放得下），句內不加換行點，
+    讓標題優先在標點處換行，例如「迷思三：給學生更多選擇，／就能促進學習」。"""
     parts = []
     for run in re.findall(f"[{HAN}{PUNCT}]+|[^{HAN}{PUNCT}]+", text):
         if not re.match(f"[{HAN}{PUNCT}]", run):
@@ -58,4 +65,5 @@ def mark(text):
     # 括號內不換行（例如「（1920 年代至 1950 年代）」），「A vs. B」不從 vs. 前後斷開
     s = re.sub(r"（[^（）]*）", lambda m: m.group(0).replace(MARK, "").replace(" ", NBSP), s)
     s = re.sub(r" vs\. ", NBSP + "vs." + NBSP, s)
-    return s
+    clauses = re.split(f"(?<=[{''.join(CLOSE)}])", s)
+    return "".join(c.replace(MARK, "") if _width(c) <= limit else c for c in clauses)

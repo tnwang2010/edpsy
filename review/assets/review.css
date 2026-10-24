@@ -96,6 +96,7 @@ img{max-width:100%}
 .slide{margin:.6em 0;display:grid;gap:8px}
 .slide img{display:block;width:100%;height:auto;border:1.5px solid var(--slide-line);background:#fff}
 .slide figcaption{font-size:1rem;color:var(--soft);line-height:1.7;display:flex;gap:8px;align-items:baseline;justify-content:center;text-align:center}
+.slide figcaption .nw{white-space:nowrap}
 .slide figcaption::before{content:"投影片";flex:none;font-size:1rem;font-weight:700;color:#fff;background:var(--soft);border-radius:4px;padding:0 6px;line-height:1.7}
 
 /* in-article boxes */
