@@ -18,9 +18,9 @@ python3 review-src/tools/build.py
 
 | 要改的東西 | 檔案 |
 |---|---|
-| 某一週的文字內容 | `review-src/weekNN/content.py`（例如第 1 週是 `week01/content.py`） |
-| 某一週的投影片圖片 | `review-src/weekNN/slides/<key>.jpg` |
-| 導覽欄的週次清單、新增一週 | `review-src/weeks.json` |
+| 某一次上課的文字內容 | `review-src/weekNN/content.py`（例如第 1 次是 `week01/content.py`） |
+| 某一次上課的投影片圖片 | `review-src/weekNN/slides/<key>.jpg` |
+| 導覽欄的上課清單、新增一次上課 | `review-src/weeks.json` |
 | 版面、顏色、字級 | `review-src/assets/review.css` |
 | 網頁的結構（導覽欄、頁首、頁尾） | `review-src/tools/build.py` |
 
@@ -28,7 +28,7 @@ python3 review-src/tools/build.py
 
 `BLOCKS` 是一個清單，依序就是網頁上的段落。每個項目是一個 tuple，第一個值是型別：
 
-- `("label", "第 1 週｜教育心理學概論")`：標題上方的小標籤
+- `("label", "第 1 次｜教育心理學概論")`：標題上方的小標籤。網站以「上課次數」編號（第 N 次），不是每週都上課；資料夾仍沿用 weekNN 命名，NN 即上課次數
 - `("title", "…")`、`("dek", "…")`：標題與導言
 - `("byline", "依王孜𡩋老師於「115學士後教育學分班」2026/10/08 課堂內容與投影片整理｜閱讀時間約 15 分鐘")`
 - `("toc_label", "本文目錄")` 後面接 `("ol", [...])`：本文目錄，**項目必須和各個 `h2` 一一對應、順序相同**
@@ -46,7 +46,7 @@ python3 review-src/tools/build.py
 
 ## 投影片圖片的來源
 
-每週的投影片圖都取自王老師的 Google 簡報（第 1 週：https://docs.google.com/presentation/d/1ZddoQpoF_K5d4-Y594AfRRjVgY0xuZWPT7cfROGen54 ），`content.py` 開頭的 `SLIDES` 記錄每張圖對應的投影片 ID。
+每次上課的投影片圖都取自王老師的 Google 簡報（第 1 次：https://docs.google.com/presentation/d/1ZddoQpoF_K5d4-Y594AfRRjVgY0xuZWPT7cfROGen54 ），`content.py` 開頭的 `SLIDES` 記錄每張圖對應的投影片 ID。
 AI 助手**打不開這份簡報**，所以：
 
 - 要換圖時，請老師提供該張投影片匯出的圖檔（Google 簡報：「檔案 → 下載 → PNG 圖片」，下載的是目前這一張），不要用螢幕截圖；截圖常會帶到「連結的投影片」按鈕等介面元素，或把邊緣切掉。
@@ -71,10 +71,10 @@ AI 助手**打不開這份簡報**，所以：
 - 修改 CSS 後，請確認手機寬度（約 375px）不會出現左右捲動。
 - 標題（h1–h3）的換行點由 `tools/headings.py` 依中文斷詞產生，只會在詞與詞之間或標點處換行。若發現某個詞在手機上被拆成兩行，把這個詞加進 `headings.py` 的 `KEEP` 清單，再重新產生網頁。
 
-## 新增一週
+## 新增一次上課
 
 1. 建立 `review-src/weekNN/content.py`（可複製 `week01/content.py` 的結構）與 `review-src/weekNN/slides/`。
-2. 在 `review-src/weeks.json` 把該週的 `topic` 與 `content` 填上（例如 `"week02/content.py"`）。
+2. 在 `review-src/weeks.json` 把該次的 `topic` 與 `content` 填上（例如 `"week02/content.py"`）。
 3. 執行 `python3 review-src/tools/build.py`。
 
 ## 不要動的東西
@@ -83,5 +83,5 @@ AI 助手**打不開這份簡報**，所以：
 
 ## 提交方式
 
-- commit 訊息用中文簡短說明改了什麼，例如「第 1 週：修正迷思一的統計數字」。
-- 如果是透過 Pull Request 提交，請在說明中列出修改了哪幾週、哪幾節。
+- commit 訊息用中文簡短說明改了什麼，例如「第 1 次：修正迷思一的統計數字」。
+- 如果是透過 Pull Request 提交，請在說明中列出修改了哪幾次、哪幾節。

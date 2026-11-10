@@ -67,7 +67,7 @@ def sidebar(weeks, current):
     """左側導覽：每週一個可收折的區塊，已上線的週次列出編號大綱與小節。"""
     groups = []
     for w in weeks:
-        wk, label = f"week{w['week']:02d}", f"第 {w['week']} 週"
+        wk, label = f"week{w['week']:02d}", f"第 {w['week']} 次"
         if not w.get("blocks"):
             groups.append(f'<div class="wk off"><span>{label}</span><span class="soon">尚未上線</span></div>')
             continue
@@ -80,8 +80,8 @@ def sidebar(weeks, current):
                         + (f'<ul class="subs">{subs}</ul>' if subs else "") + "</li>")
         groups.append(f'<details class="wk{" on" if here else ""}"{" open" if here else ""}>'
                       f'<summary>{label}｜{inline(w["topic"])}</summary><ol class="secs">{"".join(secs)}</ol></details>')
-    return ('<nav class="side" aria-label="課程週次"><div class="side-box">'
-            '<div class="side-head"><span class="side-title">各週大綱</span>'
+    return ('<nav class="side" aria-label="課程各次"><div class="side-box">'
+            '<div class="side-head"><span class="side-title">各次大綱</span>'
             '<button class="side-toggle" type="button" aria-expanded="true" aria-controls="side-list">收合</button></div>'
             f'<div class="side-list" id="side-list">{"".join(groups)}</div></div></nav>')
 
@@ -193,7 +193,7 @@ def home(weeks, out):
     """review/index.html：各週卡片（日期、主題、各節大綱），未上線的週次顯示為預告。"""
     cards, soon = [], []
     for w in weeks:
-        label = f"第 {w['week']} 週"
+        label = f"第 {w['week']} 次"
         if not w["blocks"]:
             soon.append(f'<div class="wcard off"><span class="wnum">{label}</span><span class="wsoon">尚未上線</span></div>')
             continue
@@ -223,7 +223,7 @@ def home(weeks, out):
   <header class="home-head">
     <p class="tag">115學士後教育學分班｜教育心理學</p>
     <h1>課後複習</h1>
-    <p class="intro">依<span class="name">王孜𡩋</span>老師每週課堂內容與投影片整理，適合缺課或想複習的同學閱讀。點選下方的週次進入；進入後可用「各週大綱」跳到任一節。</p>
+    <p class="intro">依<span class="name">王孜𡩋</span>老師每次課堂內容與投影片整理，適合缺課或想複習的同學閱讀。點選下方的上課次數進入；進入後可用「各次大綱」跳到任一節。</p>
   </header>
   <div class="wlist">{"".join(cards)}</div>
   {f'<div class="wsoon-row">{"".join(soon)}</div>' if soon else ""}
